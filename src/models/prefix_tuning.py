@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from tqdm import tqdm
 from transformers import AutoTokenizer
-from src.utils.get_optimizer import get_optimizer
+from ..utils.get_optimizer import get_optimizer
 
 
 class T5AttentionPrefixTuning(nn.Module):

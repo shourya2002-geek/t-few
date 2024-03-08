@@ -6,11 +6,11 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import TensorBoardLogger
 
-from src.data import FinetuneDataModule, get_dataset_reader, PretrainDataModule
-from src.models.EncoderDecoder import EncoderDecoder
-from src.models.modify_model import modify_transformer
-from src.utils.Config import Config
-from src.utils.util import ParseKwargs, set_seeds
+from .data import FinetuneDataModule, get_dataset_reader, PretrainDataModule
+from .models.EncoderDecoder import EncoderDecoder
+from .models.modify_model import modify_transformer
+from .utils.Config import Config
+from .utils.util import ParseKwargs, set_seeds
 
 
 def get_transformer(config):
@@ -41,10 +41,10 @@ def main(config):
 
     trainer = Trainer(
         enable_checkpointing=False,
-        gpus=torch.cuda.device_count(),
-        precision=config.compute_precision,
-        amp_backend="native",
-        strategy=config.compute_strategy if config.compute_strategy != "none" else None,
+        devices=torch.cuda.device_count(),
+        accelerator="gpu",
+        precision=16,
+        strategy="ddp",
         logger=logger,
         log_every_n_steps=4,
         max_steps=config.num_steps,
