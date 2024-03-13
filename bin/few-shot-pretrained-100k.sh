@@ -18,7 +18,7 @@ for model in 't03b'
 do
   for num_shot in 4
   do
-    for dataset in diabetes
+    for dataset in seer
     do
       eval_before_training=False
       num_steps=$(( 30 * ($num_shot / $train_batch_size)))
@@ -61,12 +61,12 @@ do
       for seed in 42
       do
         CUDA_VISIBLE_DEVICES=${cuda_device} CONFIG_PATH=t-few/configs HF_HOME=content/.cache/huggingface \
-        python -m t-few.src.pl_train -c ${model}.json+ia3.json+global.json -k dataset=${dataset} load_weight="t-few/pretrained_checkpoints/${model}_ia3_finish.pt" num_steps=${num_steps} num_shot=${num_shot} \
+        python3.8 -m t-few.src.pl_train -c ${model}.json+ia3.json+global.json -k dataset=${dataset} load_weight="t-few/pretrained_checkpoints/${model}_ia3_finish.pt" num_steps=${num_steps} num_shot=${num_shot} \
         exp_name=${model}_${dataset}_numshot${num_shot}_seed${seed}_ia3_pretrained100k few_shot_random_seed=${seed} seed=${seed} allow_skip_exp=${allow_skip_exp} eval_before_training=${eval_before_training} eval_epoch_interval=${eval_epoch_interval} \
         batch_size=${train_batch_size} grad_accum_factor=${grad_accum_factor} lr=${lr}
 
         echo "Logging GPU memory usage..."
-        python -c "import torch; print(f'Current memory allocated: {torch.cuda.memory_allocated() / 1e9} GB'); print(f'Max memory allocated: {torch.cuda.max_memory_allocated() / 1e9} GB')"
+        python3.8 -c "import torch; print(f'Current memory allocated: {torch.cuda.memory_allocated() / 1e9} GB'); print(f'Max memory allocated: {torch.cuda.max_memory_allocated() / 1e9} GB')"
       done
 
       
